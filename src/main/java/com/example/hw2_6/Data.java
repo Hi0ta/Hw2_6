@@ -7,48 +7,45 @@ public class Data {
     private static final String VALID_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
 
     public Data(String login, String password, String confirmPassword) {
-        this.setLogin(login);
-        this.setPassword(password);
-        this.setConfirmPassword(confirmPassword);
+        try {
+            this.setLogin(login);
+        } catch (WrongLoginException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            this.setPassword(password);
+        } catch (WrongPasswordException e) {
+            System.out.println(e.getMessage());
+        }
+        try {
+            this.setConfirmPassword(confirmPassword);
+        } catch (WrongPasswordException e) {
+          System.out.println(e.getMessage());
+        }
     }
     public String getLogin() {return login;}
     public String getPassword() {return password;}
     public String getConfirmPassword() {return confirmPassword;}
 
-    public void setLogin(String login) {
+    public void setLogin(String login) throws WrongLoginException {
         if (0 < login.length() && login.length() <= 20 && valid(login)) {
             this.login = login;
-            System.out.println("true");
-            } else{
-            try {
-                throw new WrongLoginException("Логин должен быть заполнен!! И содержать в себе только латинские буквы, цифры или знак подчеркивания. Длиной не более 20 символов");
-            } catch (WrongLoginException e) {
-                System.out.println(e.getMessage());
-            }
-            }
-    }
-    public void setPassword(String password) {
-        if (0 < password.length() && password.length() <= 20 && valid(password)) {
-            this.password = password;
-            System.out.println("true");
-        } else {
-            try {
-                throw new WrongPasswordException("Пароль должен быть заполнен!! И содержать в себе только латинские буквы, цифры или знак подчеркивания. Длиной не более 20 символов");
-            } catch (WrongPasswordException e) {
-                System.out.println(e.getMessage());
-            }
+        } else{
+            throw new WrongLoginException("Логин должен быть заполнен!! И содержать в себе только латинские буквы, цифры или знак подчеркивания. Длиной не более 20 символов");
         }
     }
-    public void setConfirmPassword(String confirmPassword) {
+    public void setPassword(String password) throws WrongPasswordException {
+        if (0 < password.length() && password.length() <= 20 && valid(password)) {
+            this.password = password;
+        } else {
+            throw new WrongPasswordException("Пароль должен быть заполнен!! И содержать в себе только латинские буквы, цифры или знак подчеркивания. Длиной не более 20 символов");
+        }
+    }
+    public void setConfirmPassword(String confirmPassword) throws WrongPasswordException {
         if (confirmPassword.equals(password)) {
             this.confirmPassword = confirmPassword;
-            System.out.println("true");
         } else {
-            try {
-                throw new WrongPasswordException("Подтверждающий пароль должен быть заполнен!! И полностью совпадать с паролем");
-            } catch (WrongPasswordException e) {
-                System.out.println(e.getMessage());
-            }
+            throw new WrongPasswordException("Подтверждающий пароль должен быть заполнен!! И полностью совпадать с паролем");
         }
     }
     private static boolean valid(String s) {
